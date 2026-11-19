@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'net.minecraftforge.gradle' version '6.0.54'
+}
+
+version = '0.2.1'
+group = 'io.github.winking114.hollowrealm.tweaks'
+base.archivesName = 'HollowRealm-Tweaks'
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            mods { hollowrealm_tweaks { source sourceSets.main } }
+        }
+        server {
+            workingDirectory project.file('run-server')
+            args '--nogui'
+            mods { hollowrealm_tweaks { source sourceSets.main } }
+        }
+    }
+}
+
+repositories { mavenCentral() }
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.4.29'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.3'
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    maxParallelForks = 1
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+    }
+}
+tasks.named('jar', Jar) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    manifest.attributes('Implementation-Title': 'HollowRealm Tweaks', 'Implementation-Version': project.version)
+    finalizedBy 'reobfJar'
+}
+
+// A separate test-only mod. It is never included in the deliverable JAR.
+sourceSets {
+    probe {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+tasks.register('probeJar', Jar) {
+    archiveBaseName = 'hollowrealm-tweaks-probe'
+    from sourceSets.probe.output
+    finalizedBy 'reobfProbeJar'
+}
+reobf { probeJar {} }

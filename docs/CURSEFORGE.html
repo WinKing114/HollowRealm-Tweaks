@@ -1,0 +1,52 @@
+<p style="text-align:center;">
+  <img src="https://img.shields.io/badge/Minecraft-1.20.1-5b9c51?style=for-the-badge" alt="Minecraft 1.20.1" />
+  <img src="https://img.shields.io/badge/Forge-47.4.x-5b9c51?style=for-the-badge" alt="Forge 47.4.x" />
+  <img src="https://img.shields.io/badge/Java-17-5b9c51?style=for-the-badge" alt="Java 17" />
+  <a href="https://github.com/WinKing114/HollowRealm-Tweaks/issues"><img src="https://img.shields.io/badge/GitHub-Issues-5b9c51?style=for-the-badge" alt="GitHub Issues" /></a>
+  <img src="https://img.shields.io/badge/License-All%20Rights%20Reserved-5b9c51?style=for-the-badge" alt="All Rights Reserved" />
+</p>
+
+<p style="font-size:18px;"><strong>HollowRealm Tweaks</strong> is a lightweight, high-priority <strong>in-memory server-data compatibility mod</strong> built for the <strong>HollowRealm</strong> modpack on <strong>Minecraft 1.20.1 (Forge)</strong>. It repairs broken global loot modifier conditions, overwritten crafting recipes, and unguarded optional-mod affixes via Forge's <code>AddPackFindersEvent</code> (<code>hollowrealm_tweaks:compat</code>, positioned at <code>TOP</code>)&mdash;with zero Mixins, zero disk OpenLoader files, and zero gameplay rebalancing.</p>
+
+<p style="font-size:18px;">Install this mod if you play HollowRealm (or run the same mod combination) and want broken upstream data resources repaired safely at runtime without changing original drops, outputs, or affix values. Code-level and Mixin crash fixes live separately in <a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow">HollowRealm Fixes</a>.</p>
+
+<h1>⚙️ What's Included</h1>
+<hr />
+<p style="font-size:18px;">Every patch verifies the exact <strong>SHA-256 fingerprint</strong> of the installed target JSON files and <strong>fails closed</strong>: if an upstream mod is absent, updated, or already fixed, that patch skips cleanly without affecting other overrides.</p>
+<ul>
+  <li style="font-size:18px;"><strong>Critters and Companions Clam Loot Condition Repair:</strong> Fixes <code>crittersandcompanions:loot_modifiers/inject_clams.json</code> (v2.3.5) by rewriting three invalid <code>neoforge:loot_table_id</code> condition IDs to Forge 1.20.1's <code>forge:loot_table_id</code>, restoring clam drops in shipwrecks while keeping the original 10% chance and tables.</li>
+  <li style="font-size:18px;"><strong>Annihilation Bottle Recipe Restoration:</strong> Detects when <code>legendary_delicacies</code> shadows <code>legendary_monsters:recipes/bottle_of_annihilation.json</code> with <code>minecraft:air</code> and restores Legendary Monsters' audited 8-bottle crafting recipe.</li>
+  <li style="font-size:18px;"><strong>Fallen Gems &amp; Affixes Optional Gun Affix Guard:</strong> When <code>scguns</code> is absent and <code>placebo</code> <code>8.6.3</code> is loaded, adds native <code>forge:mod_loaded("scguns")</code> conditions to four optional gun attribute affixes so Placebo skips them cleanly before decoding without altering the remaining 98+ affixes.</li>
+</ul>
+
+<h1>🎯 Fixes vs. Tweaks &mdash; Which One Do You Need?</h1>
+<hr />
+<p style="font-size:18px;">HollowRealm's custom maintenance is split cleanly into two complementary mods with zero overlapping targets:</p>
+<ul>
+  <li style="font-size:18px;"><strong><a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow">HollowRealm Fixes</a></strong> (<code>hollowrealm_performance_compat</code>) &mdash; <strong>Code &amp; Mixin layer</strong>: fixes crashes, thread-safety races, JEI socketing display, and the optional CoO/Structurify coremod conflict.</li>
+  <li style="font-size:18px;"><strong>HollowRealm Tweaks</strong> (<code>hollowrealm_tweaks</code>) &mdash; <strong>In-memory Server Data layer</strong>: repairs clam loot condition IDs, restores the shadowed annihilation bottle recipe, and gates optional Scguns affixes when Scguns is absent.</li>
+</ul>
+<p style="font-size:18px;">Both mods are designed and verified to run together safely.</p>
+
+<h1>📋 Requirements &amp; Compatibility</h1>
+<hr />
+<ul>
+  <li style="font-size:18px;"><strong>Environment:</strong> Minecraft <strong>1.20.1</strong> &middot; Forge <code>[47.4.16, 48)</code> (verified on Forge <strong>47.4.29</strong>) &middot; <strong>Java 17</strong>.</li>
+  <li style="font-size:18px;"><strong>Multiplayer / Side:</strong> Uses <code>IGNORE_ALL_VERSION</code> and registers only <code>SERVER_DATA</code> resources (<code>hollowrealm_tweaks:compat</code>), avoiding false client/server version rejections.</li>
+  <li style="font-size:18px;"><strong>Optional Target Mods:</strong> All target mods (Critters and Companions, Legendary Monsters, Legendary Delicacies, Fallen Gems &amp; Affixes, Placebo) are optional and independently SHA-256 gated. Overrides are cached once per JVM process.</li>
+</ul>
+
+<h1>📦 Related Projects</h1>
+<hr />
+<ul>
+  <li style="font-size:18px;"><a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow"><strong>HollowRealm Fixes</strong></a> (<a href="https://github.com/WinKing114/HR-Fixes" rel="nofollow">GitHub</a>) &mdash; Companion code-level &amp; Mixin compatibility mod for HollowRealm (<code>2.0.1</code>).</li>
+  <li style="font-size:18px;"><a href="https://www.curseforge.com/minecraft/mc-mods/crosshairbobbing-fixed" rel="nofollow"><strong>CrosshairBobbing Fixed</strong></a> (<a href="https://github.com/WinKing114/CrosshairBobbing-Fixed" rel="nofollow">GitHub</a>) &mdash; Keeps crosshair view bobbing and action animations (walking, attacking, breaking blocks, charging, eating, and drinking) while fixing Quilt/loader startup crashes and Forge 1.20.x HUD transform glitches.<br /><em>Original mod attribution: Unofficial bug-fix fork of <strong>Crosshair Bobbing</strong> by <strong>Krash220</strong> (<a href="https://www.curseforge.com/minecraft/mc-mods/xbob" rel="nofollow">CurseForge</a> &middot; <a href="https://modrinth.com/mod/xbob" rel="nofollow">Modrinth</a> &middot; <a href="https://github.com/Krash220/CrosshairBobbingMod" rel="nofollow">GitHub</a>).</em></li>
+</ul>
+
+<h1>💬 Feedback &amp; Issue Reporting</h1>
+<hr />
+<p style="font-size:18px;">View version-by-version changes in the <a href="https://github.com/WinKing114/HollowRealm-Tweaks/blob/main/CHANGELOG.md" rel="nofollow">Changelog</a> or grab source releases on <a href="https://github.com/WinKing114/HollowRealm-Tweaks/releases" rel="nofollow">GitHub Releases</a>. Found an upstream update that needs a new fingerprint audit? Open an issue on <a href="https://github.com/WinKing114/HollowRealm-Tweaks/issues" rel="nofollow">GitHub Issues</a> with your <code>latest.log</code> / <code>debug.log</code> and installed mod versions.</p>
+
+<h1>📜 License &amp; Credits</h1>
+<hr />
+<p style="font-size:18px;"><strong>All Rights Reserved.</strong> Independent third-party compatibility project, not affiliated with the authors of the target mods. Production builds contain zero bundled upstream mod code or assets.</p>

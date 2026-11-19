@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "modId": "hollowrealm_tweaks",
+  "displayName": "HollowRealm Tweaks",
+  "version": "0.2.1",
+  "packId": "hollowrealm_tweaks:compat",
+  "packType": "SERVER_DATA",
+  "packPosition": "TOP",
+  "patches": [
+    {
+      "id": "clam_conditions",
+      "targetMod": "crittersandcompanions",
+      "resources": [
+        {
+          "path": "data/crittersandcompanions/loot_modifiers/inject_clams.json",
+          "sha256": "4273eaa880484a7f3b3ee8567d45b780929822f98b64a785a6ccbce054449355"
+        }
+      ],
+      "description": "Rewrite three neoforge:loot_table_id condition IDs to forge:loot_table_id while keeping original 10% drop chance and pools"
+    },
+    {
+      "id": "bottle_recipe",
+      "targetMod": "legendary_monsters",
+      "conflictMod": "legendary_delicacies",
+      "resources": [
+        {
+          "path": "data/legendary_monsters/recipes/bottle_of_annihilation.json",
+          "authorSha256": "6496d004dadf9ebc102e5b805064fdd84e08abb7f789e19f17e3c859c7384255",
+          "addonOverrideSha256": "53b78882830c434a09353c1c37e9abaaa7ca570cd956010c0899470700da95a9"
+        }
+      ],
+      "description": "Restore Legendary Monsters bottle_of_annihilation recipe (8 bottles) when shadowed by Legendary Delicacies air override"
+    },
+    {
+      "id": "gun_conditions",
+      "targetMod": "fallen_gems_affixes",
+      "optionalDependency": "scguns",
+      "requiredLoader": "placebo@8.6.3",
+      "resources": [
+        {
+          "path": "data/fallen_gems_affixes/affixes/gun/attribute/bullet_damage.json",
+          "sha256": "1632d01fd3ea33d1140c2967c591ad4a3e82ee52ce7aeb4056cd9b9321166b0d"
+        },
+        {
+          "path": "data/fallen_gems_affixes/affixes/gun/attribute/projectile_speed.json",
+          "sha256": "c42ed1c13e5ce758e0133c308ced0099a2d2e2e57befdf58247fa08e4e83ada6"
+        },
+        {
+          "path": "data/fallen_gems_affixes/affixes/gun/attribute/reload_speed.json",
+          "sha256": "7cecd11d1f1442cfe72764d9c64b8b29d9e5a58d7ef7d94a98cd82d4e98660fe"
+        },
+        {
+          "path": "data/fallen_gems_affixes/affixes/gun/attribute/spread_reduction.json",
+          "sha256": "2985fd0ddae54448e9805b97c8294b88cc4e70f66bbc0c471c98a9198d11561f"
+        }
+      ],
+      "description": "Add forge:mod_loaded(scguns) condition to four optional gun attribute affixes when Scguns is absent"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+.gradle/
+build/
+tooling/
+run*/
+runtime-server/
+logs/
+evidence/
+backups/
+dist/
+__pycache__/
+*.py[cod]
