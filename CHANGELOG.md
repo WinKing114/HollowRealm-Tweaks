@@ -22,7 +22,7 @@ All notable changes to **HollowRealm Tweaks** (mod ID `hollowrealm_tweaks`) are 
 - Fixed `CompatPackResources.listResources` handling of trailing slashes (`"loot_modifiers/"`) and exact-resource path queries.
 - Fixed `GunAffixPatch.addScgunsCondition` overwriting pre-existing `"conditions"` arrays if present on a candidate resource.
 
-[Release notes](docs/RELEASE-0.2.1.md) · [Verification notes](docs/VERIFICATION-0.2.1.md)
+[CurseForge file `9703214`](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks/files/9703214) · [GitHub tag `v0.2.1`](https://github.com/WinKing114/HollowRealm-Tweaks/releases/tag/v0.2.1) · [Release notes](docs/RELEASE-0.2.1.md) · [Verification notes](docs/VERIFICATION-0.2.1.md)
 
 ---
 

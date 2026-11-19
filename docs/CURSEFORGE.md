@@ -1,6 +1,8 @@
 # HollowRealm Tweaks — CurseForge Metadata & Markdown Mirror
 
+- **CurseForge Project**: `https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks` (Project ID `1817105`, `0.2.1` File ID `9703214`)
 - **Project Name**: `HollowRealm Tweaks`
+- **Cover Asset**: [docs/cover.png](cover.png) (`1024x1024` PNG)
 - **Summary (Short Description)**:
   `In-memory server-data compatibility pack for HollowRealm on 1.20.1 Forge: fixes clam GLM conditions, annihilation bottle recipe collision, and optional Scguns affixes.`
 - **License**: `All Rights Reserved`

@@ -58,7 +58,7 @@ Both mods are designed and verified to run together cleanly when co-installed.
 
 ## 💬 Feedback & Issue Reporting
 
-- Browse **[Changelog](CHANGELOG.md)** for full version history (`0.1.0` – `0.2.1`).
+- Browse **[Changelog](CHANGELOG.md)** for full version history (`0.1.0` – `0.2.1`) and **[CurseForge](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks/files/all)** for released builds.
 - Report compatibility issues or upstream mod updates on **[GitHub Issues](https://github.com/WinKing114/HollowRealm-Tweaks/issues)**. Please attach your `latest.log` / `debug.log`, Forge version, and installed mod versions.
 
 ### Building from Source (`0.2.1`)
