@@ -4,6 +4,20 @@ All notable changes to **HollowRealm Tweaks** (mod ID `hollowrealm_tweaks`) are 
 
 ---
 
+## [0.3.0] — 2026-11-21 (Fallen Gems & Affixes Compat Gem & Extra Bonus Repairs)
+
+### Added
+- **`CompatGemPatch`** (`fallen_gems_affixes-1.20.1-2.1.5.jar` SHA-256-audited overrides, increasing total active overrides from `6` to `9` when `scguns` and `additional_attributes` are absent):
+  1. `data/fallen_gems_affixes/gems/compat/spell_lightning.json` (`2ef303f9a95d8c5d7bd4165fe25f7de115f5c2cfeab83df7ddc9e7181d092c10`): appends `{"type": "forge:mod_loaded", "modid": "additional_attributes"}` to `"conditions"` when `additional_attributes` is not loaded so `GemRegistry` skips it cleanly before decoding.
+  2. `data/fallen_gems_affixes/gems/compat/hemolith_shard.json` (`7e310acd45eaa6154a89ded4f69e1b4630ca4c14d928ec8309cc41d0cb1dbdf3`): strips the unguarded 3rd bonus (`"attribute": "additional_attributes:innate_spell/irons_spellbooks/devour"`) when `additional_attributes` is not loaded while preserving both valid `irons_spellbooks` bonuses (`irons_spellbooks:blood_spell_power` and `irons_spellbooks:blood_magic_resist`), allowing `fallen_gems_affixes:compat/hemolith_shard` and its `hemolith_shard_light` (`traveloptics:vigor_siphon`) / `hemolith_shard_ranged` (`cataclysm_spellbooks:hemophilia`) extra gem bonuses to register cleanly.
+  3. `data/fallen_gems_affixes/extra_gem_bonuses/compat/hemolith_shard_leggings.json` (`d17e0220769a120d7fddd4ce4ae14b14651adc9d7000b0db1ba3743b7c53dbb7`): overrides `"conditions"` with `[{"type": "forge:false"}]` so `fallen_lib`'s `ExtraGemBonusRegistry` skips the removed `traveloptics:assassin` mob effect (`traveloptics-7.2.0-1.20.1.jar`) without throwing `Unknown registry key: traveloptics:assassin`.
+- Added `CompatGemPatchTest` (5 JUnit 5 tests covering all 3 resources, `additional_attributes` absent/present cases, SHA-256 fail-closed checks, and malformed JSON rejection) and expanded `HollowRealmTweaksCacheBenchmarkTest` (now 18 / 18 JUnit tests total).
+- Added `LoadingModList` fallback to `ForgeModState` for early pack-finder invocations and updated `hollowrealm-tweaks-manifest.json` to `0.3.0`.
+
+[Release notes](docs/RELEASE-0.3.0.md) · [Verification notes](docs/VERIFICATION-0.3.0.md)
+
+---
+
 ## [0.2.1] — 2026-11-19 (First Public Release Candidate)
 
 ### Added

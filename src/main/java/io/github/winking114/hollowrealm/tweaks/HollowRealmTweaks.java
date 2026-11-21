@@ -7,6 +7,7 @@ import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.LoadingModList;
 import org.slf4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,11 +62,26 @@ public final class HollowRealmTweaks {
 
     private static final class ForgeModState implements ModState {
         @Override public boolean isLoaded(String modId) {
-            return ModList.get().isLoaded(modId);
+            var modList = ModList.get();
+            if (modList != null) return modList.isLoaded(modId);
+            var loading = LoadingModList.get();
+            return loading != null && loading.getModFileById(modId) != null;
         }
 
         @Override public String version(String modId) {
-            return ModList.get().getModContainerById(modId).map(mod -> mod.getModInfo().getVersion().toString()).orElse("");
+            var modList = ModList.get();
+            if (modList != null) {
+                return modList.getModContainerById(modId).map(mod -> mod.getModInfo().getVersion().toString()).orElse("");
+            }
+            var loading = LoadingModList.get();
+            if (loading == null) return "";
+            var file = loading.getModFileById(modId);
+            if (file == null) return "";
+            return file.getMods().stream()
+                    .filter(info -> modId.equals(info.getModId()))
+                    .findFirst()
+                    .map(info -> info.getVersion().toString())
+                    .orElse("");
         }
     }
 
@@ -127,6 +143,31 @@ public final class HollowRealmTweaks {
                         "gun_conditions", name + " requires scguns", logDecisions);
             }
         }
+
+        boolean additionalAttributes = modState.isLoaded(CompatGemPatch.ADDITIONAL_ATTRIBUTES_MOD_ID);
+        if (additionalAttributes) {
+            if (logDecisions) {
+                LOGGER.info("[HollowRealm Tweaks] SKIP compat_gem_additional_attributes: additional_attributes installed");
+            }
+        } else {
+            registerOverride(overrides,
+                    ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", CompatGemPatch.SPELL_LIGHTNING_PATH),
+                    reader.read("fallen_gems_affixes", "data/fallen_gems_affixes/" + CompatGemPatch.SPELL_LIGHTNING_PATH)
+                            .flatMap(bytes -> CompatGemPatch.applySpellLightning(bytes, false)),
+                    "compat_gem_spell_lightning", "spell_lightning requires additional_attributes", logDecisions);
+            registerOverride(overrides,
+                    ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", CompatGemPatch.HEMOLITH_SHARD_PATH),
+                    reader.read("fallen_gems_affixes", "data/fallen_gems_affixes/" + CompatGemPatch.HEMOLITH_SHARD_PATH)
+                            .flatMap(bytes -> CompatGemPatch.applyHemolithShard(bytes, false)),
+                    "compat_gem_hemolith_shard", "strip additional_attributes devour bonus when additional_attributes is absent", logDecisions);
+        }
+
+        registerOverride(overrides,
+                ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", CompatGemPatch.HEMOLITH_SHARD_LEGGINGS_PATH),
+                reader.read("fallen_gems_affixes", "data/fallen_gems_affixes/" + CompatGemPatch.HEMOLITH_SHARD_LEGGINGS_PATH)
+                        .flatMap(CompatGemPatch::applyHemolithShardLeggings),
+                "compat_extra_gem_bonus_hemolith_leggings", "disable removed traveloptics:assassin extra gem bonus", logDecisions);
+
         return Map.copyOf(overrides);
     }
 

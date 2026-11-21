@@ -21,6 +21,7 @@ import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import java.nio.file.Files;
@@ -95,6 +96,7 @@ public final class VerificationProbe {
         var result = new JsonObject();
         verifyBottle(server, mode, phase, result);
         verifyAffixes(server, mode, phase, result);
+        verifyCompatGems(server, mode, phase, result);
         RESULTS.add(phase, result);
     }
 
@@ -147,6 +149,74 @@ public final class VerificationProbe {
         require(otherKeys.size() > 0, "All other affixes disappeared");
         result.add("non_gun_affixes", otherKeys);
         System.out.println("[HRT-PROBE] " + phase + " gun_conditions=" + active + " invalid_gun_registered=0 other_affixes=" + otherKeys.size());
+    }
+
+    private static void verifyCompatGems(MinecraftServer server, String mode, String phase, JsonObject result) throws Exception {
+        boolean active = mode.equals("active");
+        var gemRegistryClass = Class.forName("dev.shadowsoffire.apotheosis.adventure.socket.gem.GemRegistry");
+        var gemRegistry = gemRegistryClass.getField("INSTANCE").get(null);
+        @SuppressWarnings("unchecked")
+        var gemKeys = (Set<ResourceLocation>) gemRegistryClass.getMethod("getKeys").invoke(gemRegistry);
+
+        var spellLightningPath = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "gems/compat/spell_lightning.json");
+        var spellLightningRes = server.getResourceManager().getResource(spellLightningPath).orElseThrow();
+        require(spellLightningRes.sourcePackId().equals(PACK_ID) == active, "Wrong spell_lightning resource winner");
+        try (var reader = spellLightningRes.openAsReader()) {
+            var json = JsonParser.parseReader(reader).getAsJsonObject();
+            var conditions = json.getAsJsonArray("conditions");
+            require(conditions.size() == (active ? 2 : 1), "Unexpected spell_lightning conditions count");
+            if (active) {
+                require(!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.EMPTY),
+                        "spell_lightning condition should evaluate false when additional_attributes is absent");
+            }
+        }
+        var spellLightningId = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "compat/spell_lightning");
+        require(!gemKeys.contains(spellLightningId), "Broken spell_lightning gem registered: " + spellLightningId);
+
+        var hemolithPath = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "gems/compat/hemolith_shard.json");
+        var hemolithRes = server.getResourceManager().getResource(hemolithPath).orElseThrow();
+        require(hemolithRes.sourcePackId().equals(PACK_ID) == active, "Wrong hemolith_shard resource winner");
+        try (var reader = hemolithRes.openAsReader()) {
+            var json = JsonParser.parseReader(reader).getAsJsonObject();
+            var bonuses = json.getAsJsonArray("bonuses");
+            require(bonuses.size() == (active ? 2 : 3), "Unexpected hemolith_shard bonuses count: " + bonuses.size());
+        }
+        var hemolithId = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "compat/hemolith_shard");
+        if (ModList.get().isLoaded("irons_spellbooks")) {
+            require(gemKeys.contains(hemolithId) == active, "hemolith_shard registration did not match mode");
+        }
+
+        var leggingsPath = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "extra_gem_bonuses/compat/hemolith_shard_leggings.json");
+        var leggingsRes = server.getResourceManager().getResource(leggingsPath).orElseThrow();
+        require(leggingsRes.sourcePackId().equals(PACK_ID) == active, "Wrong hemolith_shard_leggings resource winner");
+        try (var reader = leggingsRes.openAsReader()) {
+            var json = JsonParser.parseReader(reader).getAsJsonObject();
+            var conditions = json.getAsJsonArray("conditions");
+            require(conditions.size() == 1, "Unexpected hemolith_shard_leggings conditions count");
+            if (active) {
+                require("forge:false".equals(conditions.get(0).getAsJsonObject().get("type").getAsString()),
+                        "Expected forge:false condition on hemolith_shard_leggings");
+                require(!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.EMPTY),
+                        "hemolith_shard_leggings forge:false condition should evaluate false");
+            }
+        }
+        var extraRegistryClass = Class.forName("net.rtxyd.fallen.lib.runtime.forgemod.network.ExtraGemBonusRegistry");
+        var extraRegistry = extraRegistryClass.getField("INSTANCE").get(null);
+        @SuppressWarnings("unchecked")
+        var extraKeys = (Set<ResourceLocation>) extraRegistryClass.getMethod("getKeys").invoke(extraRegistry);
+        var leggingsId = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "compat/hemolith_shard_leggings");
+        require(!extraKeys.contains(leggingsId), "Broken hemolith_shard_leggings extra bonus registered: " + leggingsId);
+        if (ModList.get().isLoaded("traveloptics") && active) {
+            var lightId = ResourceLocation.fromNamespaceAndPath("fallen_gems_affixes", "compat/hemolith_shard_light");
+            require(extraKeys.contains(lightId), "Expected hemolith_shard_light extra bonus to be registered");
+        }
+
+        result.addProperty("compat_gems", active);
+        result.addProperty("registered_gems_count", gemKeys.size());
+        System.out.println("[HRT-PROBE] " + phase + " compat_gems=" + active + " hemolith_registered=" + gemKeys.contains(hemolithId)
+                + " spell_lightning_registered=" + gemKeys.contains(spellLightningId)
+                + " hemolith_leggings_registered=" + extraKeys.contains(leggingsId)
+                + " total_gems=" + gemKeys.size());
     }
 
     private static int countClams(MinecraftServer server, String lootPath) {

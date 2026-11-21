@@ -3,6 +3,6 @@ loaderVersion="[47,)"
 license="All Rights Reserved"
 [[mods]]
 modId="hollowrealm_tweaks_probe"
-version="0.2.0"
+version="0.3.0"
 displayName="HollowRealm Tweaks verification only"
 description="Test-only server assertions; not part of the deliverable."

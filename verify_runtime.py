@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent
 SERVER = ROOT / "runtime-server"
 JAVA = Path(r"C:\Program Files\Zulu\zulu-17\bin\java.exe")
 INSTALLED_MODS = Path(r"C:\Users\WinKing\Documents\.minecraft\versions\HollowRealm\mods")
-VERSION = "0.2.1"
+VERSION = "0.3.0"
 EVIDENCE = ROOT / "evidence" / VERSION
 TARGETS = json.loads((EVIDENCE / "runtime-targets.json").read_text("utf-8"))
 ARTIFACT = f"HollowRealm-Tweaks-{VERSION}.jar"
@@ -23,7 +23,7 @@ def run(mode):
     mods = SERVER / "mods"
     mods.mkdir(exist_ok=True)
     for old in mods.glob("*.jar"):
-        if old.name not in set(TARGETS) | {ARTIFACT, PROBE, "HollowRealm-Tweaks-0.1.0.jar", "hollowrealm-tweaks-probe-0.1.0.jar", "HollowRealm-Tweaks-0.2.0.jar", "hollowrealm-tweaks-probe-0.2.0.jar", "legendary_delicacies-1.1.0.jar"}:
+        if old.name not in set(TARGETS) | {ARTIFACT, PROBE, "HollowRealm-Tweaks-0.1.0.jar", "hollowrealm-tweaks-probe-0.1.0.jar", "HollowRealm-Tweaks-0.2.0.jar", "hollowrealm-tweaks-probe-0.2.0.jar", "HollowRealm-Tweaks-0.2.1.jar", "hollowrealm-tweaks-probe-0.2.1.jar", "legendary_delicacies-1.1.0.jar"}:
             raise RuntimeError(f"Unexpected file in dedicated test mods: {old}")
         old.unlink()
     if mode != "absent":
@@ -67,8 +67,21 @@ def run(mode):
                 process.wait(timeout=10)
             raise RuntimeError(f"{mode} runtime timeout; see {log_path}")
     text = log_path.read_text(encoding="utf-8", errors="replace")
+    compat_errors = [
+        line for line in text.splitlines()
+        if any(marker in line for marker in (
+            "Failed parsing gems file fallen_gems_affixes:compat/spell_lightning",
+            "Failed parsing gems file fallen_gems_affixes:compat/hemolith_shard",
+            "Failed parsing extra_gem_bonuses file fallen_gems_affixes:compat/hemolith_shard_leggings",
+            "Unknown registry key in ResourceKey[minecraft:root / minecraft:mob_effect]: traveloptics:assassin",
+        ))
+    ]
     passed = code == 0 and result_file.exists() and result_file.read_text().startswith("PASS\n") and "[HRT-PROBE] PASS" in text
+    if mode == "active" and compat_errors:
+        passed = False
     result = {"mode": mode, "exit_code": code, "passed": passed, "seconds": round(time.monotonic() - start, 1),
+              "compat_error_count": len(compat_errors),
+              "compat_errors": compat_errors,
               "jars": {p.name: sha(p) for p in mods.glob("*.jar")},
               "evidence": [line for line in text.splitlines() if "[HRT-PROBE]" in line or "[HollowRealm Tweaks]" in line],
               "details": json.loads(details_file.read_text()) if details_file.exists() else {}}
@@ -87,5 +100,11 @@ if __name__ == "__main__":
     for phase in ("initial", "reload"):
         if baseline['details'][phase]['non_gun_affixes'] != active['details'][phase]['non_gun_affixes']:
             raise RuntimeError("Other affix registry keys changed between baseline and active")
+    if baseline["compat_error_count"] == 0:
+        raise RuntimeError("Expected baseline to exhibit the 3 FGA compat errors")
+    if active["compat_error_count"] != 0:
+        raise RuntimeError(f"Expected active to eliminate FGA compat errors, got {active['compat_error_count']}")
     (EVIDENCE / "runtime-summary.json").write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
+    shutil.rmtree(SERVER / "mods", ignore_errors=True)
     print('UNCHANGED_OTHER_AFFIX_KEYS=PASS',flush=True)
+    print(f'FGA_COMPAT_ERRORS_BASELINE={baseline["compat_error_count"]} ACTIVE={active["compat_error_count"]}', flush=True)

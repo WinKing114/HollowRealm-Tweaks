@@ -17,14 +17,15 @@
   <li><strong>Critters and Companions Clam Loot Condition Repair:</strong> Fixes <code>crittersandcompanions:loot_modifiers/inject_clams.json</code> (v2.3.5) by rewriting three invalid <code>neoforge:loot_table_id</code> condition IDs to Forge 1.20.1's <code>forge:loot_table_id</code>, restoring clam drops in shipwrecks while keeping the original 10% chance and tables.</li>
   <li><strong>Annihilation Bottle Recipe Restoration:</strong> Detects when <code>legendary_delicacies</code> shadows <code>legendary_monsters:recipes/bottle_of_annihilation.json</code> with <code>minecraft:air</code> and restores Legendary Monsters' audited 8-bottle crafting recipe.</li>
   <li><strong>Fallen Gems &amp; Affixes Optional Gun Affix Guard:</strong> When <code>scguns</code> is absent and <code>placebo</code> <code>8.6.3</code> is loaded, adds native <code>forge:mod_loaded("scguns")</code> conditions to four optional gun attribute affixes so Placebo skips them cleanly before decoding without altering the remaining 98+ affixes.</li>
+  <li><strong>Fallen Gems &amp; Affixes Compat Gem &amp; Extra Bonus Repairs:</strong> Adds <code>forge:mod_loaded("additional_attributes")</code> to <code>gems/compat/spell_lightning.json</code> and strips the unguarded <code>additional_attributes:innate_spell/irons_spellbooks/devour</code> bonus from <code>gems/compat/hemolith_shard.json</code> when <code>additional_attributes</code> is absent (preserving both <code>irons_spellbooks</code> bonuses so <code>hemolith_shard</code> and its extra gem bonuses register cleanly), and gates <code>extra_gem_bonuses/compat/hemolith_shard_leggings.json</code> with <code>forge:false</code> for <code>traveloptics</code> <code>7.2.0</code> (where <code>traveloptics:assassin</code> was removed).</li>
 </ul>
 
 <h2>Fixes vs. Tweaks &mdash; Which One Do You Need?</h2>
 <hr />
 <p>HollowRealm's custom maintenance is split cleanly into two complementary mods with zero overlapping targets:</p>
 <ul>
-  <li><strong><a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow">HollowRealm Fixes</a></strong> (<code>hollowrealm_performance_compat</code>) &mdash; <strong>Code &amp; Mixin layer</strong>: fixes crashes, thread-safety races, JEI socketing display, and the optional CoO/Structurify coremod conflict.</li>
-  <li><strong>HollowRealm Tweaks</strong> (<code>hollowrealm_tweaks</code>) &mdash; <strong>In-memory Server Data layer</strong>: repairs clam loot condition IDs, restores the shadowed annihilation bottle recipe, and gates optional Scguns affixes when Scguns is absent.</li>
+  <li><strong><a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow">HollowRealm Fixes</a></strong> (<code>hollowrealm_performance_compat</code>) &mdash; <strong>Code &amp; Mixin layer</strong>: fixes crashes, thread-safety races, Goety &amp; FancyMenu frame allocation spikes, JEI socketing display, and the optional CoO/Structurify coremod conflict.</li>
+  <li><strong>HollowRealm Tweaks</strong> (<code>hollowrealm_tweaks</code>) &mdash; <strong>In-memory Server Data layer</strong>: repairs clam loot condition IDs, restores the shadowed annihilation bottle recipe, gates optional Scguns affixes when Scguns is absent, and repairs three Fallen Gems &amp; Affixes compat gem/extra-gem-bonus files.</li>
 </ul>
 <p>Both mods are designed and verified to run together safely.</p>
 
@@ -39,7 +40,7 @@
 <h2>Related Projects</h2>
 <hr />
 <ul>
-  <li><a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow"><strong>HollowRealm Fixes</strong></a> (<a href="https://github.com/WinKing114/HR-Fixes" rel="nofollow">GitHub</a>) &mdash; Companion code-level &amp; Mixin compatibility mod for HollowRealm (<code>2.0.1</code>).</li>
+  <li><a href="https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes" rel="nofollow"><strong>HollowRealm Fixes</strong></a> (<a href="https://github.com/WinKing114/HR-Fixes" rel="nofollow">GitHub</a>) &mdash; Companion code-level &amp; Mixin compatibility mod for HollowRealm (<code>2.1.0</code>).</li>
   <li><a href="https://www.curseforge.com/minecraft/mc-mods/crosshairbobbing-fixed" rel="nofollow"><strong>CrosshairBobbing Fixed</strong></a> (<a href="https://github.com/WinKing114/CrosshairBobbing-Fixed" rel="nofollow">GitHub</a>) &mdash; Keeps crosshair view bobbing and action animations (walking, attacking, breaking blocks, charging, eating, and drinking) while fixing Quilt/loader startup crashes and Forge 1.20.x HUD transform glitches.<br /><em>Original mod attribution: Unofficial bug-fix fork of <strong>Crosshair Bobbing</strong> by <strong>Krash220</strong> (<a href="https://www.curseforge.com/minecraft/mc-mods/xbob" rel="nofollow">CurseForge</a> &middot; <a href="https://modrinth.com/mod/xbob" rel="nofollow">Modrinth</a> &middot; <a href="https://github.com/Krash220/CrosshairBobbingMod" rel="nofollow">GitHub</a>).</em></li>
 </ul>
 

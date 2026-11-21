@@ -24,6 +24,11 @@ Every patch verifies the exact **SHA-256 fingerprint** of the installed target J
   Detects when `legendary_delicacies` shadows `legendary_monsters:recipes/bottle_of_annihilation.json` with `minecraft:air` and restores Legendary Monsters' audited 8-bottle crafting recipe (Eye of Ender + Glass Bottles).
 - **Fallen Gems & Affixes Optional Gun Affix Guard (`gun_conditions`)**  
   When `scguns` is absent and `placebo` `8.6.3` is loaded, adds native `forge:mod_loaded("scguns")` conditions to four optional gun attribute affixes (`bullet_damage`, `projectile_speed`, `reload_speed`, `spread_reduction`) so Placebo skips them before codec decoding without touching the remaining 98+ affixes.
+- **Fallen Gems & Affixes Compat Gem & Extra Bonus Repairs (`compat_gem_spell_lightning`, `compat_gem_hemolith_shard`, `compat_extra_gem_bonus_hemolith_leggings`)**  
+  Fixes three broken compat files in `fallen_gems_affixes` (`2.1.5`) that otherwise log `ERROR` stack traces on every world load:
+  1. Adds `forge:mod_loaded("additional_attributes")` to `gems/compat/spell_lightning.json` when `additional_attributes` is absent (matching all other `spell_*` school gems).
+  2. Strips the unguarded 3rd bonus (`additional_attributes:innate_spell/irons_spellbooks/devour`) from `gems/compat/hemolith_shard.json` when `additional_attributes` is absent while preserving both valid `irons_spellbooks` bonuses (`irons_spellbooks:blood_spell_power` and `irons_spellbooks:blood_magic_resist`), allowing `fallen_gems_affixes:compat/hemolith_shard` and its `hemolith_shard_light` / `hemolith_shard_ranged` extra gem bonuses to register cleanly.
+  3. Gates `extra_gem_bonuses/compat/hemolith_shard_leggings.json` with `[{"type": "forge:false"}]` because its target effect `traveloptics:assassin` was removed in `traveloptics` `7.2.0-1.20.1`.
 
 ---
 
@@ -33,8 +38,8 @@ HollowRealm's custom maintenance is split cleanly into two complementary mods wi
 
 | Mod | Layer | What It Solves | Side / Multiplayer |
 | :--- | :--- | :--- | :--- |
-| **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)** (`hollowrealm_performance_compat`) | **Code & Mixin** | Crashes, concurrency races, JEI socketing extension, CoO/Structurify coremod gate | `BOTH` (`IGNORE_SERVER_VERSION`) |
-| **HollowRealm Tweaks** (`hollowrealm_tweaks`) | **In-Memory Server Data** | Broken clam GLM condition IDs, shadowed annihilation bottle recipe, optional Scguns affix conditions | `BOTH` (`IGNORE_ALL_VERSION`) |
+| **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)** (`hollowrealm_performance_compat`) | **Code & Mixin** | Crashes, concurrency races, Goety & FancyMenu frame allocation guards, JEI socketing extension, CoO/Structurify coremod gate | `BOTH` (`IGNORE_SERVER_VERSION`) |
+| **HollowRealm Tweaks** (`hollowrealm_tweaks`) | **In-Memory Server Data** | Broken clam GLM condition IDs, shadowed annihilation bottle recipe, optional Scguns affix conditions, FGA compat gem & extra-gem-bonus repairs | `BOTH` (`IGNORE_ALL_VERSION`) |
 
 Both mods are designed and verified to run together cleanly when co-installed.
 
@@ -50,7 +55,7 @@ Both mods are designed and verified to run together cleanly when co-installed.
 
 ## Related Projects
 
-- **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)** ([GitHub](https://github.com/WinKing114/HR-Fixes)) — Companion code-level & Mixin bug-fix mod for HollowRealm (`2.0.1`).
+- **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)** ([GitHub](https://github.com/WinKing114/HR-Fixes)) — Companion code-level & Mixin bug-fix mod for HollowRealm (`2.1.0`).
 - **[CrosshairBobbing Fixed](https://www.curseforge.com/minecraft/mc-mods/crosshairbobbing-fixed)** ([GitHub](https://github.com/WinKing114/CrosshairBobbing-Fixed)) — Keeps your crosshair bobbing smoothly with view movement and playing action animations (walking, attacking, breaking blocks, charging bows/tridents/crossbows, eating, and drinking) while fixing Quilt/loader startup crashes and isolating Forge 1.20.x HUD matrix transforms so health bars and hotbars stay put.  
   *Attribution: Unofficial bug-fix fork of **Crosshair Bobbing** by **Krash220** — official original project on [CurseForge (`xbob`)](https://www.curseforge.com/minecraft/mc-mods/xbob) · [Modrinth (`xbob`)](https://modrinth.com/mod/xbob) · [GitHub (`Krash220/CrosshairBobbingMod`)](https://github.com/Krash220/CrosshairBobbingMod).*
 
@@ -58,10 +63,10 @@ Both mods are designed and verified to run together cleanly when co-installed.
 
 ## Feedback & Issue Reporting
 
-- Browse **[Changelog](CHANGELOG.md)** for full version history (`0.1.0` – `0.2.1`) and **[CurseForge](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks/files/all)** for released builds.
+- Browse **[Changelog](CHANGELOG.md)** for full version history (`0.1.0` – `0.3.0`) and **[CurseForge](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks/files/all)** for released builds.
 - Report compatibility issues or upstream mod updates on **[GitHub Issues](https://github.com/WinKing114/HollowRealm-Tweaks/issues)**. Please attach your `latest.log` / `debug.log`, Forge version, and installed mod versions.
 
-### Building from Source (`0.2.1`)
+### Building from Source (`0.3.0`)
 
 ```powershell
 $env:JAVA_HOME = 'C:/Program Files/Zulu/zulu-17'

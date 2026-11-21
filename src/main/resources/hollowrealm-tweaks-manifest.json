@@ -2,7 +2,7 @@
   "schema": 1,
   "modId": "hollowrealm_tweaks",
   "displayName": "HollowRealm Tweaks",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "packId": "hollowrealm_tweaks:compat",
   "packType": "SERVER_DATA",
   "packPosition": "TOP",
@@ -55,6 +55,42 @@
         }
       ],
       "description": "Add forge:mod_loaded(scguns) condition to four optional gun attribute affixes when Scguns is absent"
+    },
+    {
+      "id": "compat_gem_spell_lightning",
+      "targetMod": "fallen_gems_affixes",
+      "optionalDependency": "additional_attributes",
+      "resources": [
+        {
+          "path": "data/fallen_gems_affixes/gems/compat/spell_lightning.json",
+          "sha256": "2ef303f9a95d8c5d7bd4165fe25f7de115f5c2cfeab83df7ddc9e7181d092c10"
+        }
+      ],
+      "description": "Add forge:mod_loaded(additional_attributes) condition to compat/spell_lightning gem when additional_attributes is absent"
+    },
+    {
+      "id": "compat_gem_hemolith_shard",
+      "targetMod": "fallen_gems_affixes",
+      "optionalDependency": "additional_attributes",
+      "resources": [
+        {
+          "path": "data/fallen_gems_affixes/gems/compat/hemolith_shard.json",
+          "sha256": "7e310acd45eaa6154a89ded4f69e1b4630ca4c14d928ec8309cc41d0cb1dbdf3"
+        }
+      ],
+      "description": "Strip additional_attributes:innate_spell/irons_spellbooks/devour bonus from compat/hemolith_shard gem when additional_attributes is absent while preserving both irons_spellbooks bonuses"
+    },
+    {
+      "id": "compat_extra_gem_bonus_hemolith_leggings",
+      "targetMod": "fallen_gems_affixes",
+      "conflictMod": "traveloptics",
+      "resources": [
+        {
+          "path": "data/fallen_gems_affixes/extra_gem_bonuses/compat/hemolith_shard_leggings.json",
+          "sha256": "d17e0220769a120d7fddd4ce4ae14b14651adc9d7000b0db1ba3743b7c53dbb7"
+        }
+      ],
+      "description": "Override conditions with forge:false on extra_gem_bonuses/compat/hemolith_shard_leggings referencing removed traveloptics:assassin effect"
     }
   ]
 }

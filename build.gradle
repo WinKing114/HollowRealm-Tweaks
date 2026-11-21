@@ -3,7 +3,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '0.2.1'
+version = '0.3.0'
 group = 'io.github.winking114.hollowrealm.tweaks'
 base.archivesName = 'HollowRealm-Tweaks'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
