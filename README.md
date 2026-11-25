@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/Java-17-5b9c51?style=flat" alt="Java 17" />
   <a href="https://github.com/WinKing114/HollowRealm-Tweaks/issues"><img src="https://img.shields.io/badge/GitHub-Issues-5b9c51?style=flat" alt="GitHub Issues" /></a>
   <img src="https://img.shields.io/badge/License-All%20Rights%20Reserved-5b9c51?style=flat" alt="All Rights Reserved" />
+  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=dubole114%40gmail.com"><img src="https://img.shields.io/badge/PayPal-Donate-5b9c51?style=flat" alt="Donate via PayPal" /></a>
 </p>
 
 # HollowRealm Tweaks
