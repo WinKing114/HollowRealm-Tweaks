@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.winking114.hollowrealm.tweaks.mixin",
+  "plugin": "io.github.winking114.hollowrealm.tweaks.HRTweaksMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "FabledReforgingTableTileMixin",
+    "FabledReforgingMenuMixin",
+    "FabledResultSlotMixin",
+    "RandomizeSpellFunctionMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

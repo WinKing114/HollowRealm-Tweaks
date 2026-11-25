@@ -4,6 +4,21 @@ All notable changes to **HollowRealm Tweaks** (mod ID `hollowrealm_tweaks`) are 
 
 ---
 
+## [0.4.0] — 2026-11-24 (Fabled Ancient Reforging + 7-Tier Spell Loot Distribution)
+
+### Added
+- **Version- & Bytecode-Gated Mixin Subsystem (`HRTweaksMixinPlugin`)**: Fails closed unless exact audited mod versions and SHA-256 class fingerprints match:
+  - **`FabledReforgingTableTileMixin`, `FabledReforgingMenuMixin`, `FabledResultSlotMixin`** (`FabledAncientReforgingHelper`): Enables `fallen_gems_affixes:fabled_reforging_table` to accept `apotheosis:ancient_material`, compute Apotheosis `ancient` reforging candidates (`3` materials / `10` sigils / `125` base levels scaled `1x/2x/3x` across slots), charge single-level Apotheosis XP (`EnchantmentUtils.chargeExperience` + `ApothMiscUtil.getExpCostForSlot`), refresh menu/block entity state on pickup, and leave `fallen_gems_affixes:fabled_material` (`SetAffix`) behavior completely untouched.
+  - **`RandomizeSpellFunctionMixin`** (`SpellRarityDistribution`): Rebalances `irons_spellbooks` + `forbidden_tiers` spell scroll/imbued loot across all 7 rarities via `config/hollowrealm-tweaks-spell-rarities.json` (default `0.22 / 0.22 / 0.20 / 0.16 / 0.11 / 0.06 / 0.03`), clamps spells to their legal tier band so low-quality chests do not leak Mythic/Ancient scrolls, and guards `getWeightFromRarity` for `MYTHIC(5)`/`ANCIENT(6)`.
+- Added JUnit 5 suites `HRTweaksMixinPluginTest` (3), `FabledAncientReforgingTest` (3), and `SpellRarityDistributionTest` (5) — `29 / 29` JUnit tests passing — plus live Forge `47.4.29` runtime verification co-installed with `HollowRealm-Fixes-2.1.0.jar`.
+
+### Changed
+- Bumped `mods.toml` to `0.4.0`, set `displayTest="IGNORE_SERVER_VERSION"`, and added optional `AFTER` ordering on `apotheosis`, `ancientreforging`, `irons_spellbooks`, and `forbidden_tiers`.
+
+[Release notes](docs/RELEASE-0.4.0.md) · [Verification notes](docs/VERIFICATION-0.4.0.md)
+
+---
+
 ## [0.3.0] — 2026-11-21 (Fallen Gems & Affixes Compat Gem & Extra Bonus Repairs)
 
 ### Added

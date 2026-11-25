@@ -97,6 +97,8 @@ public final class VerificationProbe {
         verifyBottle(server, mode, phase, result);
         verifyAffixes(server, mode, phase, result);
         verifyCompatGems(server, mode, phase, result);
+        FabledReforgingProbeCheck.run(server, mode, phase, result);
+        SpellRarityProbeCheck.run(server, mode, phase, result);
         RESULTS.add(phase, result);
     }
 

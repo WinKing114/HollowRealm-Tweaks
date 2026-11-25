@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent
 SERVER = ROOT / "runtime-server"
 JAVA = Path(r"C:\Program Files\Zulu\zulu-17\bin\java.exe")
 INSTALLED_MODS = Path(r"C:\Users\WinKing\Documents\.minecraft\versions\HollowRealm\mods")
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 EVIDENCE = ROOT / "evidence" / VERSION
 TARGETS = json.loads((EVIDENCE / "runtime-targets.json").read_text("utf-8"))
 ARTIFACT = f"HollowRealm-Tweaks-{VERSION}.jar"
@@ -19,11 +19,39 @@ PROBE = f"hollowrealm-tweaks-probe-{VERSION}.jar"
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def write_probe_configs(mode):
+    cfg_dir = SERVER / "config"
+    default_cfg_dir = SERVER / "defaultconfigs"
+    cfg_dir.mkdir(parents=True, exist_ok=True)
+    default_cfg_dir.mkdir(parents=True, exist_ok=True)
+    iss_toml = (
+        "# Isolated probe ISS 5-tier config\n"
+        "[Misc]\n"
+        "rarityConfig = [0.24, 0.24, 0.22, 0.17, 0.13]\n"
+    )
+    (default_cfg_dir / "irons_spellbooks-server.toml").write_text(iss_toml, encoding="utf-8")
+    world_cfg_dir = SERVER / f"{mode}-{VERSION.replace('.', '-')}-world" / "serverconfig"
+    world_cfg_dir.mkdir(parents=True, exist_ok=True)
+    (world_cfg_dir / "irons_spellbooks-server.toml").write_text(iss_toml, encoding="utf-8")
+    rarity_json = json.dumps({
+        "_comment": "Seven-tier spell loot rarity distribution for Iron's Spellbooks + Forbidden Tiers",
+        "rarities": {
+            "common": 0.22,
+            "uncommon": 0.22,
+            "rare": 0.20,
+            "epic": 0.16,
+            "legendary": 0.11,
+            "mythic": 0.06,
+            "ancient": 0.03
+        }
+    }, indent=2) + "\n"
+    (cfg_dir / "hollowrealm-tweaks-spell-rarities.json").write_text(rarity_json, encoding="utf-8")
+
 def run(mode):
     mods = SERVER / "mods"
     mods.mkdir(exist_ok=True)
     for old in mods.glob("*.jar"):
-        if old.name not in set(TARGETS) | {ARTIFACT, PROBE, "HollowRealm-Tweaks-0.1.0.jar", "hollowrealm-tweaks-probe-0.1.0.jar", "HollowRealm-Tweaks-0.2.0.jar", "hollowrealm-tweaks-probe-0.2.0.jar", "HollowRealm-Tweaks-0.2.1.jar", "hollowrealm-tweaks-probe-0.2.1.jar", "legendary_delicacies-1.1.0.jar"}:
+        if old.name not in set(TARGETS) | {ARTIFACT, PROBE, "HollowRealm-Tweaks-0.1.0.jar", "hollowrealm-tweaks-probe-0.1.0.jar", "HollowRealm-Tweaks-0.2.0.jar", "hollowrealm-tweaks-probe-0.2.0.jar", "HollowRealm-Tweaks-0.2.1.jar", "hollowrealm-tweaks-probe-0.2.1.jar", "HollowRealm-Tweaks-0.3.0.jar", "hollowrealm-tweaks-probe-0.3.0.jar", "legendary_delicacies-1.1.0.jar", "legendary_delicacies-1.1.1.jar"}:
             raise RuntimeError(f"Unexpected file in dedicated test mods: {old}")
         old.unlink()
     if mode != "absent":
@@ -35,6 +63,7 @@ def run(mode):
     shutil.copy2(ROOT / "build/libs" / PROBE, mods)
     if mode != "baseline":
         shutil.copy2(ROOT / "build/libs" / ARTIFACT, mods)
+    write_probe_configs(mode)
     (SERVER / "eula.txt").write_text("eula=true\n", encoding="ascii")
     settings = (
         "server-ip=127.0.0.1\nserver-port=0\nonline-mode=false\nmax-players=1\n"

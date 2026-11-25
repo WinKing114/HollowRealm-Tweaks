@@ -8,9 +8,9 @@
 
 # HollowRealm Tweaks
 
-**HollowRealm Tweaks** is a lightweight, high-priority **in-memory server-data compatibility mod** built for the **HollowRealm** modpack on **Minecraft 1.20.1 (Forge)**. It repairs broken global loot modifier conditions, overwritten crafting recipes, and unguarded optional-mod affixes via Forge's `AddPackFindersEvent` (`hollowrealm_tweaks:compat`, positioned at `TOP`)—with zero Mixins, zero disk OpenLoader overrides, and zero gameplay rebalancing.
+**HollowRealm Tweaks** is a lightweight **in-memory server-data compatibility and cross-mod integration mod** built for the **HollowRealm** modpack on **Minecraft 1.20.1 (Forge)**. It repairs broken global loot modifier conditions, overwritten crafting recipes, and unguarded optional-mod affixes via Forge's `AddPackFindersEvent` (`hollowrealm_tweaks:compat`, positioned at `TOP`) alongside strictly version- and bytecode-fingerprint-gated cross-mod Mixins for Fabled/Ancient reforging and 7-tier spell loot rarity balancing—while keeping crash, concurrency, and performance fixes strictly separate in **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)**.
 
-Install this mod if you are playing HollowRealm (or using the same mod combination) and want broken upstream data files repaired safely at runtime without losing original drops, outputs, or affix values. Code-level and Mixin crash fixes live separately in **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)**.
+Install this mod if you are playing HollowRealm (or using the same mod combination) and want broken upstream data files repaired and cross-mod progression tuned safely at runtime without disk overrides inside upstream JARs. Code-level and Mixin crash/performance fixes live separately in **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)**.
 
 ---
 
@@ -30,6 +30,11 @@ Every patch verifies the exact **SHA-256 fingerprint** of the installed target J
   2. Strips the unguarded 3rd bonus (`additional_attributes:innate_spell/irons_spellbooks/devour`) from `gems/compat/hemolith_shard.json` when `additional_attributes` is absent while preserving both valid `irons_spellbooks` bonuses (`irons_spellbooks:blood_spell_power` and `irons_spellbooks:blood_magic_resist`), allowing `fallen_gems_affixes:compat/hemolith_shard` and its `hemolith_shard_light` / `hemolith_shard_ranged` extra gem bonuses to register cleanly.
   3. Gates `extra_gem_bonuses/compat/hemolith_shard_leggings.json` with `[{"type": "forge:false"}]` because its target effect `traveloptics:assassin` was removed in `traveloptics` `7.2.0-1.20.1`.
 
+- **Fabled Reforging Table + `apotheosis:ancient_material` Dual-Mode Support (`fabled_table_ancient_material`)**
+  Bytecode-gated Mixins (`FabledReforgingTableTileMixin`, `FabledReforgingMenuMixin`, `FabledResultSlotMixin`) allow Fallen Gems & Affixes' Fabled Reforging Table to accept `apotheosis:ancient_material`, resolve Apotheosis' `ancient` reforging recipe (`3` materials / `10` sigils / `125` levels scaled `1x/2x/3x` across slots), charge single-level Apotheosis XP, and preserve `fabled_material` + `SetAffix` behavior intact.
+- **7-Tier Spell Loot Distribution (`spell_loot_7_tier_distribution`)**
+  `RandomizeSpellFunctionMixin` + `config/hollowrealm-tweaks-spell-rarities.json` govern Common..Ancient spell scroll loot weights (`0.22 / 0.22 / 0.20 / 0.16 / 0.11 / 0.06 / 0.03` by default), clamp each spell to its legal tier range so early chests never leak Mythic/Ancient scrolls, and guard Forbidden Tiers' `MYTHIC`/`ANCIENT` filter weights.
+
 ---
 
 ## Fixes vs. Tweaks — Which One Do You Need?
@@ -39,7 +44,7 @@ HollowRealm's custom maintenance is split cleanly into two complementary mods wi
 | Mod | Layer | What It Solves | Side / Multiplayer |
 | :--- | :--- | :--- | :--- |
 | **[HollowRealm Fixes](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-fixes)** (`hollowrealm_performance_compat`) | **Code & Mixin** | Crashes, concurrency races, Goety & FancyMenu frame allocation guards, JEI socketing extension, CoO/Structurify coremod gate | `BOTH` (`IGNORE_SERVER_VERSION`) |
-| **HollowRealm Tweaks** (`hollowrealm_tweaks`) | **In-Memory Server Data** | Broken clam GLM condition IDs, shadowed annihilation bottle recipe, optional Scguns affix conditions, FGA compat gem & extra-gem-bonus repairs | `BOTH` (`IGNORE_ALL_VERSION`) |
+| **HollowRealm Tweaks** (`hollowrealm_tweaks`) | **In-Memory Server Data & Cross-Mod Balance Mixins** | Broken clam GLM condition IDs, shadowed annihilation bottle recipe, optional Scguns affix conditions, FGA compat gem & extra-gem-bonus repairs, Fabled Table `ancient_material` integration, 7-tier ISS + Forbidden Tiers spell loot curve | `BOTH` (`IGNORE_SERVER_VERSION`) |
 
 Both mods are designed and verified to run together cleanly when co-installed.
 
@@ -48,8 +53,8 @@ Both mods are designed and verified to run together cleanly when co-installed.
 ## Requirements & Compatibility
 
 - **Minecraft / Loader / Java**: Minecraft **1.20.1**, Forge **`[47.4.16, 48)`** (runtime-verified on **Forge 47.4.29**), **Java 17**.
-- **Multiplayer / Side**: Declares `displayTest="IGNORE_ALL_VERSION"` and registers only `SERVER_DATA` resources (`hollowrealm_tweaks:compat`), avoiding false client/server version rejections.
-- **Optional Target Mods**: All target mods (`Critters and Companions`, `Legendary Monsters`, `Legendary Delicacies`, `Fallen Gems & Affixes`, `Placebo`) are optional. Overrides are resolved lazily once and cached per JVM process across `AddPackFindersEvent` calls.
+- **Multiplayer / Side**: Declares `displayTest="IGNORE_SERVER_VERSION"` and registers both `hollowrealm_tweaks:compat` (`SERVER_DATA`) and fail-closed version/SHA-256-gated cross-mod Mixins.
+- **Optional Target Mods**: All target mods (`Critters and Companions`, `Legendary Monsters`, `Legendary Delicacies`, `Fallen Gems & Affixes`, `Placebo`, `Apotheosis`, `Ancient Reforging`, `Iron's Spellbooks`, `Forbidden Tiers`) are verified before patching; every data patch and Mixin fails closed if absent or altered.
 
 ---
 
@@ -63,10 +68,10 @@ Both mods are designed and verified to run together cleanly when co-installed.
 
 ## Feedback & Issue Reporting
 
-- Browse **[Changelog](CHANGELOG.md)** for full version history (`0.1.0` – `0.3.0`) and **[CurseForge](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks/files/all)** for released builds.
+- Browse **[Changelog](CHANGELOG.md)** for full version history (`0.1.0` – `0.4.0`) and **[CurseForge](https://www.curseforge.com/minecraft/mc-mods/hollowrealm-tweaks/files/all)** for released builds.
 - Report compatibility issues or upstream mod updates on **[GitHub Issues](https://github.com/WinKing114/HollowRealm-Tweaks/issues)**. Please attach your `latest.log` / `debug.log`, Forge version, and installed mod versions.
 
-### Building from Source (`0.3.0`)
+### Building from Source (`0.4.0`)
 
 ```powershell
 $env:JAVA_HOME = 'C:/Program Files/Zulu/zulu-17'

@@ -2,13 +2,16 @@
   "schema": 1,
   "modId": "hollowrealm_tweaks",
   "displayName": "HollowRealm Tweaks",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "packId": "hollowrealm_tweaks:compat",
   "packType": "SERVER_DATA",
   "packPosition": "TOP",
+  "mixinConfig": "hollowrealm-tweaks.mixins.json",
+  "mixinPlugin": "io.github.winking114.hollowrealm.tweaks.HRTweaksMixinPlugin",
   "patches": [
     {
       "id": "clam_conditions",
+      "layer": "SERVER_DATA",
       "targetMod": "crittersandcompanions",
       "resources": [
         {
@@ -20,6 +23,7 @@
     },
     {
       "id": "bottle_recipe",
+      "layer": "SERVER_DATA",
       "targetMod": "legendary_monsters",
       "conflictMod": "legendary_delicacies",
       "resources": [
@@ -33,6 +37,7 @@
     },
     {
       "id": "gun_conditions",
+      "layer": "SERVER_DATA",
       "targetMod": "fallen_gems_affixes",
       "optionalDependency": "scguns",
       "requiredLoader": "placebo@8.6.3",
@@ -58,6 +63,7 @@
     },
     {
       "id": "compat_gem_spell_lightning",
+      "layer": "SERVER_DATA",
       "targetMod": "fallen_gems_affixes",
       "optionalDependency": "additional_attributes",
       "resources": [
@@ -70,6 +76,7 @@
     },
     {
       "id": "compat_gem_hemolith_shard",
+      "layer": "SERVER_DATA",
       "targetMod": "fallen_gems_affixes",
       "optionalDependency": "additional_attributes",
       "resources": [
@@ -82,6 +89,7 @@
     },
     {
       "id": "compat_extra_gem_bonus_hemolith_leggings",
+      "layer": "SERVER_DATA",
       "targetMod": "fallen_gems_affixes",
       "conflictMod": "traveloptics",
       "resources": [
@@ -91,6 +99,53 @@
         }
       ],
       "description": "Override conditions with forge:false on extra_gem_bonuses/compat/hemolith_shard_leggings referencing removed traveloptics:assassin effect"
+    },
+    {
+      "id": "fabled_table_ancient_material",
+      "layer": "MIXIN",
+      "targetMod": "fallen_gems_affixes",
+      "requiredMods": [
+        "apotheosis@7.4.8",
+        "ancientreforging@1.3"
+      ],
+      "mixins": [
+        "FabledReforgingTableTileMixin",
+        "FabledReforgingMenuMixin",
+        "FabledResultSlotMixin"
+      ],
+      "classes": [
+        {
+          "path": "net/kayn/fallen_gems_affixes/adventure/reforging/FabledReforgingTableTile.class",
+          "sha256": "d6adf620cc4bffc0886394212d9ae329fae0685b1e2d3cc200309631f935005f"
+        },
+        {
+          "path": "net/kayn/fallen_gems_affixes/adventure/reforging/FabledReforgingMenu.class",
+          "sha256": "2c6fde1038a0a7a66b7a5c2fd99c846ed7afdd12bc8463b25141d3c241de288a"
+        },
+        {
+          "path": "net/kayn/fallen_gems_affixes/adventure/reforging/FabledReforgingMenu$FabledResultSlot.class",
+          "sha256": "e9e994f309f622f6d13401ee42311d1d68865d17e6a25ea762c57bfdfe2cea2d"
+        }
+      ],
+      "description": "Allow Fabled Reforging Table to accept apotheosis:ancient_material and route ancient reforging via Apotheosis ReforgingRecipe while preserving fabled_material behavior"
+    },
+    {
+      "id": "spell_loot_7_tier_distribution",
+      "layer": "MIXIN",
+      "targetMod": "irons_spellbooks",
+      "requiredMods": [
+        "forbidden_tiers@1.0.0"
+      ],
+      "mixins": [
+        "RandomizeSpellFunctionMixin"
+      ],
+      "classes": [
+        {
+          "path": "io/redspace/ironsspellbooks/loot/RandomizeSpellFunction.class",
+          "sha256": "d5cfcd8f93dc8ca9833820389fcccb55cc2cda7feedeffff77177d74f830efb3"
+        }
+      ],
+      "description": "Configure 7-tier spell loot rarity distribution (default 22/22/20/16/11/6/3) across Iron's Spellbooks and Forbidden Tiers Mythic/Ancient tiers"
     }
   ]
 }
