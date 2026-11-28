@@ -3,7 +3,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = findProperty('mod_version') ?: '0.4.0'
+version = findProperty('mod_version') ?: '1.0.0'
 group = 'io.github.winking114.hollowrealm.tweaks'
 base.archivesName = 'HollowRealm-Tweaks'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -17,7 +17,9 @@ def externalModJars = files(
     new File(instanceMods, 'fallen_gems_affixes-1.20.1-2.1.5.jar'),
     new File(instanceMods, 'ancientreforging-1.3.jar'),
     new File(instanceMods, '[Iron的法术与魔法书] irons_spellbooks-1.20.1-3.16.4.jar'),
-    new File(instanceMods, 'forbidden_tiers-1.20.1-1.0.1.jar')
+    new File(instanceMods, 'forbidden_tiers-1.20.1-1.0.1.jar'),
+    new File(instanceMods, 'ApothicAttributes-1.20.1-1.3.7.jar'),
+    new File(instanceMods, 'curios-forge-5.14.1+1.20.1.jar')
 )
 
 minecraft {

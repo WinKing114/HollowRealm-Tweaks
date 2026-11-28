@@ -25,6 +25,8 @@ public final class HollowRealmTweaks {
 
     public HollowRealmTweaks() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCompatibilityPack);
+        io.github.winking114.hollowrealm.tweaks.crit.UnifiedCritEvents.register();
+        io.github.winking114.hollowrealm.tweaks.starter.StarterGuideBookBlocker.register();
     }
 
     private void addCompatibilityPack(AddPackFindersEvent event) {

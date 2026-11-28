@@ -2,7 +2,7 @@
   "schema": 1,
   "modId": "hollowrealm_tweaks",
   "displayName": "HollowRealm Tweaks",
-  "version": "0.4.0",
+  "version": "1.2.0",
   "packId": "hollowrealm_tweaks:compat",
   "packType": "SERVER_DATA",
   "packPosition": "TOP",
